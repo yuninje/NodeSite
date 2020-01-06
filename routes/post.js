@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const dateFormat = require('dateformat');
 
-const { Post } = require('../models');
+const { Post, Comment } = require('../models');
 
-const addDate = (post) => post.date = dateFormat(post.createdAt, "yyyy.mm.dd");
+const addDate = (object) => object.date = dateFormat(object.createdAt, "yyyy.mm.dd");
 
 // read all
 router.get('/', async (req, res, next) => {
@@ -50,8 +50,12 @@ router.get('/:id', async (req, res, next) => {
 	console.log('/:id	::[GET]');
 	try {
 		const post = await Post.findOne({ where: { id: req.params.id } });
+		const comments = await Comment.findAll({ where : {postId : req.params.id }});
 		addDate(post);
-		return res.render('post/read', { post: post });
+		comments.forEach((comment) => {
+			addDate(comment);
+		});
+		return res.render('post/read', { post: post , comments : comments});
 	} catch (error) {
 		console.error(error);
 		next(error);
@@ -102,5 +106,22 @@ router.post('/:id', async (req, res, next) => {
 		}
 	}
 })
+
+// comments
+router.post('/:postId/comments', async (req, res, next) => {
+	console.log('/:postId/comments	::[post]');
+	try{
+		await Comment.create({
+			content : req.body.content,
+			postId : req.params.postId
+		});
+		res.redirect('/posts/'+req.params.postId);
+	}catch(error){
+		console.error(error);
+		next(error);
+	}
+})
+
+
 
 module.exports = router;

@@ -21,3 +21,18 @@ block content
 		input(type='hidden' name='_method' value='delete')
 		button(type='submit') delete
 
+	table
+		each comment in comments
+			tbody
+				tr
+					th date
+					td= comment.date
+				tr
+					th content
+					td= comment.content
+
+			
+	form#comment-form(action='/posts/'+post.id+'/comments' method='post')
+		textarea(name='content')
+		button(type='submit') comment
+
