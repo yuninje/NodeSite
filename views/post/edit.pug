@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+	h1= title
+
+	form(action='/posts/'+post.id method='post')
+		table
+			tr
+				th title
+				td
+					input(type='text' name='title' value = post.title)
+			tr 
+				th date
+				td= post.date
+			tr
+				th content
+				td
+					textarea(name='content') #{post.content}
+		input(type='hidden' name='_method' value=_method)
+		input(type='submit' value='수정')
+	a(href='/posts/'+post.id): button(type='button') 이전

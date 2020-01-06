@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+	h1 post read page
+
+	table
+		tr
+			th title
+			td= post.title
+		tr 
+			th date
+			td= post.date
+		tr
+			th content
+			td= post.content
+
+	a(href='/posts/'+post.id+'/edit'): button(type='button') edit
+	br
+	a(href='/posts'): button(type='button') list
+	form(action='/posts/'+post.id method='post')
+		input(type='hidden' name='_method' value='delete')
+		button(type='submit') delete
+

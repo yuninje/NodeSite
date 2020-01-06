@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+	h1= title
+
+	form(action='/posts' method='post' )
+		table
+			tr
+				th title
+				td
+					input(type='text' name='title')
+			tr
+				th content
+				td
+					textarea(name='content')
+		input(type='submit' value='작성')
