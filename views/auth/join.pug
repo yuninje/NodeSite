@@ -1,0 +1,18 @@
+extends ../layout
+
+block content
+	h1 auth join 
+
+	form#join-form(action='/auth' method='post')
+		p
+			label(for='email') email
+			input#email(type='email' name='email')
+		p
+			label(for='name') name
+			input#name(type='text' name='name')
+		p
+			label(for='password') password
+			input#password(type='password' name='password')
+		p
+			button(type='submit') 회원가입
+			a(href='/'): button(type = 'button') 취소

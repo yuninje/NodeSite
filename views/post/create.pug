@@ -4,13 +4,10 @@ block content
 	h1= title
 
 	form(action='/posts' method='post' )
-		table
-			tr
-				th title
-				td
-					input(type='text' name='title')
-			tr
-				th content
-				td
-					textarea(name='content')
+		p
+			label(for='title') title
+			input#label(type='text' name='title')
+		p
+			label(for='content') content
+			textarea#content(name='content')
 		input(type='submit' value='작성')

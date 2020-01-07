@@ -33,6 +33,7 @@ block content
 
 			
 	form#comment-form(action='/posts/'+post.id+'/comments' method='post')
-		textarea(name='content')
+		label(for='content') content
+		textarea#content(name='content')
 		button(type='submit') comment
 
