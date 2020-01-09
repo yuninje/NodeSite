@@ -27,14 +27,7 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res, next) => {
 	try{
-		const user = await User.findOne({where : {email : req.body.email}});
-		if(user){
-			if(user.password == req.body.password){
-				// 로그인
-			}
-			// 비밀번호 틀림
-		}
-		// 아이디 존재하지 않음
+		
 	}catch(error){
 		console.error(error);
 		next(error);

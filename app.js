@@ -4,11 +4,22 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 
+
+
 const pageRouter = require('./routes/index');
 const {sequelize} = require('./models');        // /models/index.js 모듈에서 sequelize 객체 반환 
 
+// 로그인 관련
+const cookieParser = require('cookie-parser'); // 쿠키를 쉽게 추출 할 수 있게 도와주는 모듈
+const passport = require('passport');
+const passportConfig = require('./passport');
+const session = require('express-session');
+
+require('dotenv').config();
+
 const app = express();
-sequelize.sync();
+sequelize.sync();      // 서버가 실행될 때마다 시큐어라이즈의 스키마를 디비에 적용 
+passportConfig(passport); // passport/index  모듈 실행
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -19,6 +30,20 @@ app.use(express.static(path.join(__dirname, 'uploads')));
 app.use('/img', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({extended : false}));
+
+// 로그인 관련
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(session({       // 세션 설정
+    resave : false,
+    saveUninitialized : false,
+    secret : process.env.COOKIE_SECRET,
+    cookie : {
+        httpOnly : true,
+        sequre : false,
+    }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', pageRouter);
 
