@@ -6,12 +6,12 @@ module.exports = (passport) => {
     passport.use(new LocalStrategy({
         usernameField: 'email',
         passwordField: 'password'
-    }), async (email, password, done) => {
+    }, async (email, password, done) => {
         try {
-            const exUser = User.findOne({where : {email}});
+            const exUser = await User.findOne({where : {email}});
             if(exUser){
-                const result = await exUser.passpord.compare(password);
-                if (resultT){
+                const result = exUser.password == password;
+                if (result){
                     done(null, exUser);
                 }else{
                     done(null, false, {message: ' 비밀번호 틀림'});
@@ -23,5 +23,5 @@ module.exports = (passport) => {
             console.error(error);
             done(error);
         }
-    });
+    }));
 };

@@ -14,6 +14,7 @@ const cookieParser = require('cookie-parser'); // 쿠키를 쉽게 추출 할 �
 const passport = require('passport');
 const passportConfig = require('./passport');
 const session = require('express-session');
+const flash = require('connect-flash'); // 사용자에게 일회성 메세지를 날려주는 모듈
 
 require('dotenv').config();
 
@@ -42,6 +43,7 @@ app.use(session({       // 세션 설정
         sequre : false,
     }
 }));
+app.use(flash());           // flash 모듈 장착
 app.use(passport.initialize());
 app.use(passport.session());
 

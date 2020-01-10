@@ -13,6 +13,11 @@ block content
 		p
 			label(for='password') password
 			input#password(type='password' name='password')
+		
+		if joinError
+			p
+				.error-message= joinError
+		
 		p
 			button(type='submit') 회원가입
 			a(href='/'): button(type = 'button') 취소

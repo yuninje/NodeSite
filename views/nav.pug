@@ -4,3 +4,9 @@ a(href='/users'): button(type='button') users
 
 a(href='/auth/join'): button(type='button') join
 a(href='/auth/login'): button(type='button') login
+
+if user && user.id
+	p= user.id
+	p= user
+else
+	p not login

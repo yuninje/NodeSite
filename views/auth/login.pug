@@ -10,6 +10,12 @@ block content
 		p
 			label(for='password') password
 			input#password(type='password' name='password')
+		
+		
+		if loginError
+			p
+				.error-message= loginError 
+		
 		p
 			button(type='submit') 로그인
 			a(href='/'): button(type = 'button') 취소
