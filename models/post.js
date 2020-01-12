@@ -7,7 +7,11 @@ module.exports = (sequelize, DataTypes) => (
 		content : {
 			type : DataTypes.STRING(140),
 			allowNull : false,
-		}
+        },
+        views : {
+            type : DataTypes.INTEGER,
+            defaultValue : 0
+        }
 	}, {
 		timestamps : true,  // createdAt, updatedAt column 생성
 		paranoid : true, 	// deletedAt column 생성

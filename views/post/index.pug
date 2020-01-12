@@ -6,6 +6,7 @@ block content
             th 닉네임
             th 제목
             th 날짜
+            th 조회수
 
         each post in posts
             tr
@@ -13,5 +14,6 @@ block content
                 td
                     a(href='/posts/'+post.id) #{post.title}
                 td= post.date
+                td= post.views
 
     a(href='/posts/create'): button(type='button') 새 글

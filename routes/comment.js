@@ -33,11 +33,10 @@ router.post('/:commentId', async (req, res, next) =>{
         const commentId = req.params.commentId;
         try{
             await Comment.destroy({where: {id : commentId}});
-            if (postId){
-                res.redirect('/posts/'+postId);
-            }else if(userId){
-                res.redirect('/users/'+userId+'/comments');
+            if(userId){
+                res.redirect('/users/comments');
             }
+            res.redirect('/posts/'+postId);
         }catch(error){
             console.error(error);
             next(error);

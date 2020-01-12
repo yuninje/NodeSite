@@ -14,11 +14,11 @@ db.User = require('./user')(sequelize, Sequelize);
 db.Post = require('./post')(sequelize, Sequelize);
 db.Comment = require('./comment')(sequelize,Sequelize);
 
-db.User.hasMany(db.Post);
-db.User.hasMany(db.Comment);
+db.User.hasMany(db.Post, {onDelete: 'cascade'});
+db.User.hasMany(db.Comment, {onDelete: 'cascade'});
 
 db.Post.belongsTo(db.User);
-db.Post.hasMany(db.Comment);
+db.Post.hasMany(db.Comment, {onDelete: 'cascade'});
 
 db.Comment.belongsTo(db.User);
 db.Comment.belongsTo(db.Post);

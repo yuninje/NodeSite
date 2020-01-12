@@ -6,14 +6,17 @@ block content
         tr
             th 날짜
             th 내용
+            th 조회수
+            td 
 
         each post in posts
             tr
                 td= post.date
                 td
                     a(href='/posts/'+post.id) #{post.title}
+                td= post.views
                 td
-                    form(action='/posts/:postId' method='post')
+                    form(action='/posts/'+post.id method='post')
                         input(type='hidden' name='_method' value='delete')
                         input(type='hidden' name='userId' value=user.id)
                         input(type='submit' value='삭제')

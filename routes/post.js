@@ -11,7 +11,9 @@ const addDate = (object) => object.date = dateFormat(object.createdAt, "yyyy.mm.
 router.get('/', async (req, res, next) => {
 	console.log('/	::[GET]');
 	try {
-		const posts = await Post.findAll({include : [User]});
+		const posts = await Post.findAll({
+            include : {model : User, attributes:['id','name']}
+        });
 		posts.forEach((post) => {
 			addDate(post);
 		});
@@ -55,12 +57,17 @@ router.post('/',  isLoggedIn, async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
 	console.log('/:id	::[GET]');
 	try {
-		const post = await Post.findOne({ where: { id: req.params.id } ,include : [User]});
-		const comments = await Comment.findAll({ where : {postId : req.params.id }, include : [User]});
+        const post = await Post.findOne({ where: { id: req.params.id }, include : {model : User, attributes:['id','name']} });
+        post.views += 1
+        await Post.update({ views : post.views},{where : {id : req.params.id}}); // 조회수 업데이트
+		const comments = await Comment.findAll({
+            where : {postId : req.params.id },
+            include : {model : User, attributes:['id','name']}});
+
 		addDate(post);
 		comments.forEach((comment) => {
 			addDate(comment);
-		});
+        });
 		return res.render('post/read', { 
             title : '게시글',
             post: post,
@@ -80,7 +87,7 @@ router.get('/:id', async (req, res, next) => {
 router.get('/:id/edit', isLoggedIn, async (req, res, next) => {
 	console.log('/:id/edit	::[GET]');
 	try {
-        const post = await Post.findOne({ where: { id: req.params.id }, include : [User] });
+        const post = await Post.findOne({ where: { id: req.params.id }, include : {model : User, attributes:['id','name']} });
 		addDate(post);
 		return res.render('post/edit', {
 			title : '게시글 수정',
@@ -96,26 +103,36 @@ router.get('/:id/edit', isLoggedIn, async (req, res, next) => {
 
 // 게시글 수정 및 삭제 액션 + req.user.id === post.userId 
 router.post('/:id', isLoggedIn, async (req, res, next) => {
+    const postId = req.params.id;
+    const content = req.body.content;
+    const title = req.body.title;
+    const userId = req.body.userId;
+
 	if (req.body._method == 'delete') {
 		console.log('/:id	::[DELETE]');
 		try {
-			await Post.destroy({ where: { id: req.params.id } });
-			res.redirect('/posts');
+			await Post.destroy({ where: { id: postId } });
+            if(userId){
+                res.redirect('/users/posts');
+            }
+            res.redirect('/posts');
 		} catch (error) {
 			console.error(error);
 			next(error);
-		}
+        }
+        
 	}else if (req.body._method == 'edit'){
 		console.log('/:id	::[update]');
 		try{
-			console.log('content : ' ,req.body.content);
-			await Post.update({title : req.body.title, content : req.body.content},
-				{where:{id : req.params.id}, returning:true});
-			res.redirect('/posts/'+req.params.id);
+			await Post.update({title : title, content : content},
+				{where:{id : postId}, returning:true});
+			res.redirect('/posts/'+postId);
 		}catch(error){
 			console.error(error);
 			next(error);
 		}
 	}
 })
+
+
 module.exports = router;
