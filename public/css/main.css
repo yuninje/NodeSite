@@ -1,0 +1,43 @@
+* { box-sizing: border-box; 
+    padding: 2px;}
+html, body { margin: 0; padding: 0; height: 100%; width : 80%;}
+.header {
+    background-color: mediumblue;
+    margin: 0;
+    padding: 2em;
+}
+
+.content {
+    background-color: burlywood;
+    padding: 2em;
+}
+
+.footer {
+    background-color: darkorchid;
+    padding: 2em;
+}
+
+.comments {
+    background-color: black;
+}
+.comment { 
+    display: block;
+    background-color: aqua;
+    width : 100%;
+}
+.comment-table{
+    width : 80%;
+    height: 100%;
+    float: left;
+    background-color: brown;
+}
+.comment-edit{
+    width : 20%;
+    height: 100%;
+    float: right;
+    background-color:yellow;
+}
+.comment-edit-btn{
+    width : 50%;
+    height: 100%;
+}

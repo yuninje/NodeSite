@@ -1,0 +1,19 @@
+extends ../layout
+
+block content
+    include sidenav
+    table
+        tr
+            th title
+            th date
+
+        each post in posts
+            tr
+                td
+                    a(href='/posts/'+post.id) #{post.title}
+                td= post.date
+                td
+                    form(action='/posts/:postId' method='post')
+                        input(type='hidden' name='_method' value='delete')
+                        input(type='hidden' name='userId' value=user.id)
+                        input(type='submit' value='삭제')

@@ -1,18 +1,17 @@
 extends ../layout
 
 block content
-	h1 post index page
+    table
+        tr
+            th name
+            th title
+            th date
 
-	table
-		tr
-			th title
-			th date
+        each post in posts
+            tr
+                td= post.user.name
+                td
+                    a(href='/posts/'+post.id) #{post.title}
+                td= post.date
 
-		each post in posts
-			tr
-				td
-					a(href='/posts/'+post.id) #{post.title}
-				td= post.date
-
-	a(href='/posts/create'): button(type='button') create
-	
+    a(href='/posts/create'): button(type='button') create

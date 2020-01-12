@@ -1,12 +1,14 @@
 a(href='/'): button(type='button') home
 a(href='/posts'): button(type='button') posts
 a(href='/users'): button(type='button') users
-
 a(href='/auth/join'): button(type='button') join
-a(href='/auth/login'): button(type='button') login
 
 if user && user.id
-	p= user.id
-	p= user
+    a(href='/auth/logout'): button(type='button') logout
 else
-	p not login
+    a(href='/auth/login'): button(type='button') login
+
+
+if user && user.id
+    h2= user.id
+    h2= user.name

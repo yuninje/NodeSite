@@ -5,11 +5,13 @@ const router = express.Router();
 
 const {User} = require('../models');
 
-router.get('/join', async (req, res) => {
+// 회원가입 페이지
+router.get('/join', isNotLoggedIn, async (req, res) => {
 	res.render('auth/join');
 });
 
-router.post('/', async (req, res, next) => {
+// 회원가입 액션
+router.post('/', isNotLoggedIn,async (req, res, next) => {
 	try{
 		const user = await User.create({
 			email : req.body.email,
@@ -23,7 +25,8 @@ router.post('/', async (req, res, next) => {
 	}
 });
 
-router.get('/login', (req, res) => {
+// 로그인 페이지
+router.get('/login', isNotLoggedIn, (req, res) => {
 	res.render('auth/login', {
 		title : '로그인',
         user : req.user,
@@ -31,7 +34,8 @@ router.get('/login', (req, res) => {
 	});
 });
 
-router.post('/login', async (req, res, next) => {
+// 로그인 액션
+router.post('/login', isNotLoggedIn, async (req, res, next) => {
 	passport.authenticate('local', (authError, user, info) =>{
 		if(authError){
 			console.error(authError);
@@ -51,6 +55,11 @@ router.post('/login', async (req, res, next) => {
 	})(req, res, next);
 });
 
-
+// 로그아웃 액션
+router.get('/logout', isLoggedIn, (req, res) =>{
+    req.logout();
+    req.session.destroy();
+    res.redirect('/');
+})
 
 module.exports = router;

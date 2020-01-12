@@ -1,39 +1,55 @@
 extends ../layout
 
 block content
-	h1 post read page
+    table
+        tr
+            th title
+            td= post.title
+        tr 
+            th date
+            td= post.date
+        tr
+            th user
+            td= post.user.name
+        tr
+            th content
+            td= post.content
 
-	table
-		tr
-			th title
-			td= post.title
-		tr 
-			th date
-			td= post.date
-		tr
-			th content
-			td= post.content
+    br
+    a(href='/posts'): button(type='button') list
+    if user && post.user.id === user.id    
+        a(href='/posts/'+post.id+'/edit'): button(type='button') edit
+        form(action='/posts/'+post.id method='post')
+            input(type='hidden' name='_method' value='delete')
+            button(type='submit') delete
 
-	a(href='/posts/'+post.id+'/edit'): button(type='button') edit
-	br
-	a(href='/posts'): button(type='button') list
-	form(action='/posts/'+post.id method='post')
-		input(type='hidden' name='_method' value='delete')
-		button(type='submit') delete
 
-	table
-		each comment in comments
-			tbody
-				tr
-					th date
-					td= comment.date
-				tr
-					th content
-					td= comment.content
-
-			
-	form#comment-form(action='/posts/'+post.id+'/comments' method='post')
-		label(for='content') content
-		textarea#content(name='content')
-		button(type='submit') comment
-
+    h3 comments
+    .comments
+        each comment in comments
+            .comment
+                table.comment-table
+                    tr
+                        th user
+                        td= comment.user.name
+                    tr
+                        th date
+                        td= comment.date
+                    tr
+                        th content
+                        td=comment.content
+                .comment-edit
+                    if user && comment.user.id == user.id
+                        //- form(action='/comments/'+comment.id method='post')
+                        //-     input(type='hidden' name='_method' value='edit') 
+                        //-     button(type='submit') edit
+                        form(action='/comments/'+comment.id method='post')
+                            input(type='hidden' name='_method' value='delete') 
+                            input(type='hidden' name='postId' value=post.id)
+                            button(type='submit') delete
+    
+    if user && user.id   
+        form#comment-form(action='/posts/'+post.id+'/comments' method='post')
+            label(for='content') content
+            textarea#content(name='content')
+            button(type='submit') comment
