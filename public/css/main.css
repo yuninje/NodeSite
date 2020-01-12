@@ -2,7 +2,7 @@
     padding: 2px;}
 html, body { margin: 0; padding: 0; height: 100%; width : 80%;}
 .header {
-    background-color: mediumblue;
+    background-color: aquamarine;
     margin: 0;
     padding: 2em;
 }
@@ -41,3 +41,5 @@ html, body { margin: 0; padding: 0; height: 100%; width : 80%;}
     width : 50%;
     height: 100%;
 }
+
+.error-message { color: red; font-weight: bold; }

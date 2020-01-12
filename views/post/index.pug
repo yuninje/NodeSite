@@ -3,9 +3,9 @@ extends ../layout
 block content
     table
         tr
-            th name
-            th title
-            th date
+            th 닉네임
+            th 제목
+            th 날짜
 
         each post in posts
             tr
@@ -14,4 +14,4 @@ block content
                     a(href='/posts/'+post.id) #{post.title}
                 td= post.date
 
-    a(href='/posts/create'): button(type='button') create
+    a(href='/posts/create'): button(type='button') 새 글

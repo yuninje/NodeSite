@@ -16,7 +16,8 @@ router.get('/', async (req, res, next) => {
 			addDate(post);
 		});
 		return res.render('post/index', {
-            posts: posts,
+            title : '게시글 목록',
+            posts : posts,
             user : req.user
 		});
 	} catch (error) {
@@ -29,7 +30,7 @@ router.get('/', async (req, res, next) => {
 router.get('/create', isLoggedIn, (req, res) => {
 	console.log('/create	:: [GET]');
 	res.render('post/create',{
-		title : 'post create',
+		title : '게시글 생성',
         user : req.user
 	});
 });
@@ -61,6 +62,7 @@ router.get('/:id', async (req, res, next) => {
 			addDate(comment);
 		});
 		return res.render('post/read', { 
+            title : '게시글',
             post: post,
             comments : comments,
             user : req.user
@@ -81,7 +83,7 @@ router.get('/:id/edit', isLoggedIn, async (req, res, next) => {
         const post = await Post.findOne({ where: { id: req.params.id }, include : [User] });
 		addDate(post);
 		return res.render('post/edit', {
-			title : 'post edit',
+			title : '게시글 수정',
             user : req.user,
 			post: post,
 			_method: 'edit'
@@ -116,21 +118,4 @@ router.post('/:id', isLoggedIn, async (req, res, next) => {
 		}
 	}
 })
-
-// 댓글 생성 액션
-router.post('/:postId/comments', isLoggedIn, async (req, res, next) => {
-	console.log('/:postId/comments	::[post]');
-	try{
-		await Comment.create({
-			content : req.body.content,
-            postId : req.params.postId,
-            userId : req.user.id
-		});
-		res.redirect('/posts/'+req.params.postId);
-	}catch(error){
-		console.error(error);
-		next(error);
-	}
-});
-
 module.exports = router;

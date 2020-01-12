@@ -4,14 +4,14 @@ block content
     include sidenav
     table
         tr
-            th content
-            th date
+            th 날짜
+            th 내용
 
         each comment in comments
             tr
+                td= comment.date
                 td
                     a(href='/posts/'+comment.postId) #{comment.content}
-                td= comment.date
                 td 
                     form(action='/comments/'+comment.id method='post')
                         input(type='hidden' name='_method' value='delete')

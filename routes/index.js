@@ -9,7 +9,7 @@ const authRouter = require('./auth');
 
 router.get('/', (req, res) =>{
 	res.render('index', {
-        title : 'home',
+        title : '홈페이지',
         user : req.user,
     });
 });

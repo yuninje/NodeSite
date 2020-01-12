@@ -4,14 +4,14 @@ block content
     include sidenav
     table
         tr
-            th title
-            th date
+            th 날짜
+            th 내용
 
         each post in posts
             tr
+                td= post.date
                 td
                     a(href='/posts/'+post.id) #{post.title}
-                td= post.date
                 td
                     form(action='/posts/:postId' method='post')
                         input(type='hidden' name='_method' value='delete')

@@ -4,6 +4,26 @@ const {isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const { User, Post, Comment } = require('../models');
 
+
+
+// 댓글 생성 액션
+router.post('/', isLoggedIn, async (req, res, next) => {
+	console.log('/comments	::[post]');
+	try{
+		await Comment.create({
+			content : req.body.content,
+            postId : req.body.postId,
+            userId : req.user.id
+		});
+		res.redirect('/posts/'+req.body.postId);
+	}catch(error){
+		console.error(error);
+		next(error);
+	}
+});
+
+
+// 댓글 수정 및 삭제 액션 
 router.post('/:commentId', async (req, res, next) =>{
     console.log('/comments/:commentId  :: [POST] ');
     if(req.body._method === 'delete'){

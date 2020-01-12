@@ -6,12 +6,12 @@ const {isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const {User, Post, Comment} = require('../models');
 const addDate = (object) => object.date = dateFormat(object.createdAt, "yyyy.mm.dd");
 
-router.get('/', async (req, res, next) => {
+router.get('/', isLoggedIn,  async (req, res, next) => {
     try{
         const postCount = await Post.findAndCountAll({where : {userId : req.user.id}});
         const commentCount = await Comment.findAndCountAll({where : {userId : req.user.id}});
         return res.render('user/profile', {
-            title : 'user profile',
+            title : '사용자 프로필',
             user : req.user,
             postCount : postCount,
             commentCount : commentCount
@@ -22,7 +22,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:userId/posts', async (req, res, next) => {
+router.get('/posts', isLoggedIn, async (req, res, next) => {
     try{
         const posts = await Post.findAll({
             where : { userId : req.user.id },
@@ -32,7 +32,7 @@ router.get('/:userId/posts', async (req, res, next) => {
         });
 
         return res.render('user/posts', {
-            title : 'my posts',
+            title : '내 게시글',
             user : req.user,
             posts : posts
         });
@@ -42,7 +42,7 @@ router.get('/:userId/posts', async (req, res, next) => {
     }
 })
 
-router.get('/:userId/comments', async (req, res, next) => {
+router.get('/comments', isLoggedIn, async (req, res, next) => {
     try{
         const comments = await Comment.findAll({
             where : { userId : req.user.id },
@@ -52,7 +52,7 @@ router.get('/:userId/comments', async (req, res, next) => {
         });
 
         return res.render('user/comments', {
-            title : 'my comments',
+            title : '내 댓글',
             user : req.user,
             comments : comments
         });

@@ -4,9 +4,9 @@ block content
 
 	form(action='/posts' method='post' )
 		p
-			label(for='title') title
-			input#label(type='text' name='title')
+			label(for='title') 제목
+			input#label(type='text' name='title' required )
 		p
-			label(for='content') content
-			textarea#content(name='content')
+			label(for='content') 내용
+			textarea#content(name='content' required )
 		input(type='submit' value='작성')

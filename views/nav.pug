@@ -1,14 +1,13 @@
-a(href='/'): button(type='button') home
-a(href='/posts'): button(type='button') posts
-a(href='/users'): button(type='button') users
-a(href='/auth/join'): button(type='button') join
+a(href='/'): button(type='button') 홈
+a(href='/posts'): button(type='button') 게시글
 
 if user && user.id
-    a(href='/auth/logout'): button(type='button') logout
+    a(href='/users'): button(type='button') 내 정보
+    a(href='/auth/logout'): button(type='button') 로그아웃
 else
-    a(href='/auth/login'): button(type='button') login
+    a(href='/auth/join'): button(type='button') 회원가입
+    a(href='/auth/login'): button(type='button') 로그인
 
 
 if user && user.id
-    h2= user.id
-    h2= user.name
+    h2= user.name + '님 안녕하세요 !'

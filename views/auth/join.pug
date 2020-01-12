@@ -1,18 +1,16 @@
 extends ../layout
 
 block content
-	h1 auth join 
-
 	form#join-form(action='/auth' method='post')
 		p
 			label(for='email') email
-			input#email(type='email' name='email')
+			input#email(type='email' name='email' required )
 		p
 			label(for='name') name
-			input#name(type='text' name='name')
+			input#name(type='text' name='name' required )
 		p
 			label(for='password') password
-			input#password(type='password' name='password')
+			input#password(type='password' name='password' required )
 		
 		if joinError
 			p

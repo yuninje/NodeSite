@@ -7,16 +7,27 @@ const {User} = require('../models');
 
 // 회원가입 페이지
 router.get('/join', isNotLoggedIn, async (req, res) => {
-	res.render('auth/join');
+	res.render('auth/join', {
+        title : '회원가입',
+        joinError : req.flash('joinError')
+    });
 });
 
 // 회원가입 액션
 router.post('/', isNotLoggedIn,async (req, res, next) => {
+    const email = req.body.email;
+    const name = req.body.name;
+    const password = req.body.password;
 	try{
+        const findUser = await User.findOne({where : { email : email}});
+        if(findUser){
+            req.flash('joinError', '이미 존재하는 이메일');
+            return res.redirect('/auth/join');
+        }
 		const user = await User.create({
-			email : req.body.email,
-			name : req.body.name,
-			password : req.body.password,
+			email : email,
+			name : name,
+			password : password,
 		});
 		res.redirect('auth/login');
 	}catch(error){
@@ -30,7 +41,7 @@ router.get('/login', isNotLoggedIn, (req, res) => {
 	res.render('auth/login', {
 		title : '로그인',
         user : req.user,
-        joinError : req.flash('loginError'),
+        loginError : req.flash('loginError'),
 	});
 });
 
@@ -43,7 +54,7 @@ router.post('/login', isNotLoggedIn, async (req, res, next) => {
 		}
 		if(!user){
 			req.flash('loginError', info.message);
-			return res.redirect('/');
+			return res.redirect('/auth/login');
 		}
 		return req.login(user, (loginError) => {
 			if(loginError){
