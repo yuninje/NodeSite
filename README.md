@@ -1,6 +1,7 @@
 # NodeSite
 ## Node.js로 구현한 게시판형 사이트
-
+- [DB Table](https://aquerytool.com/aquerymain/index/?rurl=92fd13a3-cdd7-4beb-881e-4413e9aeda33)
+    - PW : oz35vx 
 - ### 추가한 사항
     - 회원
       - 로그인
