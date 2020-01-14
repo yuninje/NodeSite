@@ -135,10 +135,10 @@ router.post('/:id', isLoggedIn, async (req, res, next) => {
 	}
 });
 
-router.post('/posts/:id/likes', isLoggedIn , async (req, res, next) => {
+router.post('/:id/like', isLoggedIn , async (req, res, next) => {
 	const postId = req.params.id;
 	try{
-		await req.user.addpostId(postId);
+		await req.user.addLike(postId);
 		res.send('success');
 	}catch(error){
 		console.error(error);
@@ -146,7 +146,16 @@ router.post('/posts/:id/likes', isLoggedIn , async (req, res, next) => {
 	}
 });
 
-
+router.post('/:id/unlike', isLoggedIn , async (req, res, next) => {
+	const postId = req.params.id;
+	try{
+		await req.user.removeLike(postId);
+		res.send('success');
+	}catch(error){
+		console.error(error);
+		next(error);
+	}
+});
 
 
 module.exports = router;

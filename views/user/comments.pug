@@ -12,9 +12,11 @@ block content
                 td= comment.date
                 td
                     a(href='/posts/'+comment.postId) #{comment.content}
-                td 
-                    form(action='/comments/'+comment.id method='post')
-                        input(type='hidden' name='_method' value='delete')
-                        input(type='hidden' name='userId' value=user.id)
-                        input(type='submit' value='삭제')
+                    
+                if user && user.id === difUser.id
+                    td 
+                        form(action='/comments/'+comment.id method='post')
+                            input(type='hidden' name='_method' value='delete')
+                            input(type='hidden' name='userId' value=user.id)
+                            input(type='submit' value='삭제')
 

@@ -18,7 +18,9 @@ block content
             th 내용
             td= post.content
         if user && user.id !== post.user.id
-            - const likeFlag = user.Likes.includes(post.id);
+            - const likeFlag = user.Likes.map(f => f.id).includes(post.id);
+            - console.log(user);
+            - console.log(likeFlag);
             if likeFlag
                 form(action='/posts/'+post.id+'/unlike' method='post')
                     button(type='submit') 좋아요 취소
