@@ -3,20 +3,25 @@ const router = express.Router();
 const dateFormat = require('dateformat');
 const {isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
-const { User, Post, Comment } = require('../models');
+const { User, Post, Comment, Hashtag } = require('../models');
 const getUserJson = {model : User, attributes:['id','nick']};
+const getHashtagJson = {model : Hashtag};
 
 const addDate = (object) => object.date = dateFormat(object.createdAt, "yyyy.mm.dd");
-
+const setHashtext = (post) => {
+    post.hashtext = ''
+    post.hashtags.map(h => post.hashtext += '#'+h.tag+' ');
+}
 // 게시글 목록 페이지
 router.get('/', async (req, res, next) => {
 	console.log('/	::[GET]');
 	try {
 		const posts = await Post.findAll({
-            include : getUserJson
+            include : [getUserJson, getHashtagJson]
         });
 		posts.forEach((post) => {
 			addDate(post);
+            setHashtext(post);
 		});
 		return res.render('post/index', {
             title : '게시글 목록',
@@ -42,12 +47,22 @@ router.get('/create', isLoggedIn, (req, res) => {
 router.post('/',  isLoggedIn, async (req, res, next) => {
 	console.log('/  :: [POST]');
 	try {
-		const post = await Post.create({
-			title: req.body.title,
-            content: req.body.content, 
+        const post = await Post.create({
+            title: req.body.title,
+            content: req.body.content,
             userId : req.user.id
-		});
-		return res.redirect('/posts/' + post.id);
+        });
+        
+        const hashtags = req.body.hashtext.match(/#[^#\s,;]+/gm);
+        // 해쉬태그 테이블에 해쉬태그 추가.
+        if(hashtags){
+            const result = await Promise.all(hashtags.map(tag => Hashtag.findOrCreate({
+				where : { tag : tag.slice(1).toLowerCase()},
+            })));
+            await post.addHashtags(result.map(r =>r[0]));
+        }
+
+        return res.redirect('/posts/' + post.id);
 	} catch (error) {
 		console.error(error);
 		next(error);
@@ -58,7 +73,7 @@ router.post('/',  isLoggedIn, async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
 	console.log('/:id	::[GET]');
 	try {
-        const post = await Post.findOne({ where: { id: req.params.id }, include : getUserJson });
+        const post = await Post.findOne({ where: { id: req.params.id }, include :  [getUserJson, getHashtagJson] });
         post.views += 1
         await Post.update({ views : post.views},{where : {id : req.params.id}}); // 조회수 업데이트
 		const comments = await Comment.findAll({
@@ -66,6 +81,8 @@ router.get('/:id', async (req, res, next) => {
             include : getUserJson});
 
 		addDate(post);
+        setHashtext(post);
+
 		comments.forEach((comment) => {
 			addDate(comment);
         });
@@ -88,8 +105,9 @@ router.get('/:id', async (req, res, next) => {
 router.get('/:id/edit', isLoggedIn, async (req, res, next) => {
 	console.log('/:id/edit	::[GET]');
 	try {
-        const post = await Post.findOne({ where: { id: req.params.id }, include : getUserJson});
-		addDate(post);
+        const post = await Post.findOne({ where: { id: req.params.id }, include :  [getUserJson, getHashtagJson]});
+        addDate(post);
+        setHashtext(post);
 		return res.render('post/edit', {
 			title : '게시글 수정',
             user : req.user,
@@ -105,10 +123,10 @@ router.get('/:id/edit', isLoggedIn, async (req, res, next) => {
 // 게시글 수정 및 삭제 액션 + req.user.id === post.userId 
 router.post('/:id', isLoggedIn, async (req, res, next) => {
     const postId = req.params.id;
-    const content = req.body.content;
-    const title = req.body.title;
     const userId = req.body.userId;
-
+    const title = req.body.title;
+    const content = req.body.content;
+    const hashtext = req.body.hashtext;
 	if (req.body._method == 'delete') {
 		console.log('/:id	::[DELETE]');
 		try {
@@ -126,7 +144,19 @@ router.post('/:id', isLoggedIn, async (req, res, next) => {
 		console.log('/:id	::[update]');
 		try{
 			await Post.update({title : title, content : content},
-				{where:{id : postId}, returning:true});
+                {where:{id : postId}, returning:true});
+            const post = await Post.findOne({where : {id:postId}, include : getHashtagJson});
+            const hashtags = hashtext.match(/#[^#\s,;]+/gm);
+            // 해쉬태그 테이블에 해쉬태그 추가.
+
+            post.removeHashtags(post.hashtags.map(h => h.id));
+            if(hashtags){
+                const result = await Promise.all(hashtags.map(tag => Hashtag.findOrCreate({
+                    where : { tag : tag.slice(1).toLowerCase()},
+                })));
+                await post.addHashtags(result.map(r =>r[0]));
+            }
+
 			res.redirect('/posts/'+postId);
 		}catch(error){
 			console.error(error);

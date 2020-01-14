@@ -1,5 +1,5 @@
 const FOLLOW = 'follows'
-const POST_HASH_TAG = 'PostHashTag'
+const POST_HASH_TAG = 'PostHashtag'
 const LIKE = 'likes'
 
 const Sequelize = require('sequelize');
@@ -16,7 +16,7 @@ db.Sequelize = Sequelize; // DataTypes
 
 db.User = require('./user')(sequelize, Sequelize);
 db.Post = require('./post')(sequelize, Sequelize);
-db.HashTag = require('./hashtag')(sequelize, Sequelize);
+db.Hashtag = require('./hashtag')(sequelize, Sequelize);
 db.Comment = require('./comment')(sequelize,Sequelize);
 
 
@@ -62,13 +62,13 @@ db.Post.belongsToMany(db.User, {
   paranoid : false,    // deletedAt column 생성
 });
 
-// Post : HashTag = N : M   :: PostHashTag
-db.Post.belongsToMany(db.HashTag, {
+// Post : Hashtag = N : M   :: PostHashtag
+db.Post.belongsToMany(db.Hashtag, {
   through : POST_HASH_TAG,
  timestamps : false,  // createdAt, updatedAt column 생성
  paranoid : false,    // deletedAt column 생성
 });
-db.HashTag.belongsToMany(db.Post, {
+db.Hashtag.belongsToMany(db.Post, {
   through : POST_HASH_TAG,
   timestamps : true,  // createdAt, updatedAt column 생성
   paranoid : true,    // deletedAt column 생성

@@ -7,6 +7,9 @@ block content
 			label(for='title') 제목
 			input#label(type='text' name='title' required )
 		p
+			label(for='hashtext') 해시태그( ' #인제 #싸피 ' 양식으로 적어주세요)
+			textarea#hashtext(name='hashtext' required )
+		p
 			label(for='content') 내용
 			textarea#content(name='content' required )
 		input(type='submit' value='작성')

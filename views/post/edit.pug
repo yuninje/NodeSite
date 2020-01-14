@@ -1,19 +1,20 @@
 extends ../layout
 
 block content
-	form(action='/posts/'+post.id method='post')
-		table
-			tr
-				th title
-				td
-					input(type='text' name='title' value = post.title required )
-			tr 
-				th date
-				td= post.date
-			tr
-				th content
-				td
-					textarea(name='content') #{post.content}
-		input(type='hidden' name='_method' value=_method)
-		input(type='submit' value='수정')
-	a(href='/posts/'+post.id): button(type='button') 이전
+    form(action='/posts/'+post.id method='post')
+        table
+            tr
+                th 제목
+                td: input(type='text' name='title' value = post.title required )
+            tr 
+                th 날짜
+                td= post.date
+            tr
+                th 해쉬태그
+                td: input(type='text' name='hashtext' value = post.hashtext required )
+            tr
+                th 내용
+                td: textarea(name='content') #{post.content}
+        input(type='hidden' name='_method' value=_method)
+        input(type='submit' value='수정')
+    a(href='/posts/'+post.id): button(type='button') 이전

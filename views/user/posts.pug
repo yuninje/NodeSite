@@ -6,14 +6,15 @@ block content
         tr
             th 날짜
             th 내용
+            th 해쉬태그
             th 조회수
             td 
 
         each post in posts
             tr
                 td= post.date
-                td
-                    a(href='/posts/'+post.id) #{post.title}
+                td: a(href='/posts/'+post.id) #{post.title}
+                td= post.hashtext
                 td= post.views
 
                 if user && user.id === difUser.id
