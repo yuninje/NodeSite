@@ -3,15 +3,29 @@ extends ../layout
 block content
     include sidenav
 
-    table
-        tr
-            th 이름
-            td= user.name
-        
-        tr
-            th 주소
-            td 안알랴쥼
-        
-        tr
-            th 핸드폰
-            td 안알랴쥼
+    //- 팔로우 ajax 처리 해야함.
+    if(user && user.id !== difUser.id)
+        -const followFlag = user.Followings.map(f => f.id).includes(difUser.id);
+        if followFlag
+            form(action='/users/'+difUser.id+'/unfollow' method='post')
+                button(type='submit') 팔로우취소
+        else
+            form(action='/users/'+difUser.id+'/follow' method='post')
+                button(type='submit') 팔로우
+
+
+    p
+    label(for='nick') 닉네임
+    span= difUser.nick
+
+    p
+    label(for='nick') 이름
+    span= difUser.name
+
+    p
+    label(for='nick') 주소
+    span= difUser.address
+    
+    p
+    label(for='nick') 번호
+    span= difUser.phone

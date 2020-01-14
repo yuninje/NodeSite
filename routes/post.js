@@ -4,6 +4,7 @@ const dateFormat = require('dateformat');
 const {isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const { User, Post, Comment } = require('../models');
+const getUserJson = {model : User, attributes:['id','nick']};
 
 const addDate = (object) => object.date = dateFormat(object.createdAt, "yyyy.mm.dd");
 
@@ -12,7 +13,7 @@ router.get('/', async (req, res, next) => {
 	console.log('/	::[GET]');
 	try {
 		const posts = await Post.findAll({
-            include : {model : User, attributes:['id','name']}
+            include : getUserJson
         });
 		posts.forEach((post) => {
 			addDate(post);
@@ -57,12 +58,12 @@ router.post('/',  isLoggedIn, async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
 	console.log('/:id	::[GET]');
 	try {
-        const post = await Post.findOne({ where: { id: req.params.id }, include : {model : User, attributes:['id','name']} });
+        const post = await Post.findOne({ where: { id: req.params.id }, include : getUserJson });
         post.views += 1
         await Post.update({ views : post.views},{where : {id : req.params.id}}); // 조회수 업데이트
 		const comments = await Comment.findAll({
             where : {postId : req.params.id },
-            include : {model : User, attributes:['id','name']}});
+            include : getUserJson});
 
 		addDate(post);
 		comments.forEach((comment) => {
@@ -87,7 +88,7 @@ router.get('/:id', async (req, res, next) => {
 router.get('/:id/edit', isLoggedIn, async (req, res, next) => {
 	console.log('/:id/edit	::[GET]');
 	try {
-        const post = await Post.findOne({ where: { id: req.params.id }, include : {model : User, attributes:['id','name']} });
+        const post = await Post.findOne({ where: { id: req.params.id }, include : getUserJson});
 		addDate(post);
 		return res.render('post/edit', {
 			title : '게시글 수정',
@@ -132,7 +133,20 @@ router.post('/:id', isLoggedIn, async (req, res, next) => {
 			next(error);
 		}
 	}
-})
+});
+
+router.post('/posts/:id/likes', isLoggedIn , async (req, res, next) => {
+	const postId = req.params.id;
+	try{
+		await req.user.addpostId(postId);
+		res.send('success');
+	}catch(error){
+		console.error(error);
+		next(error);
+	}
+});
+
+
 
 
 module.exports = router;

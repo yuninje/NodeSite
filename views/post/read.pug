@@ -9,14 +9,23 @@ block content
             th 날짜
             td= post.date
         tr
-            th 이름
-            td= post.user.name
+            th 닉네임
+            td= post.user.nick
         tr
             th 조회수
             td= post.views
         tr
             th 내용
             td= post.content
+        if user && user.id !== post.user.id
+            - const likeFlag = user.Likes.includes(post.id);
+            if likeFlag
+                form(action='/posts/'+post.id+'/unlike' method='post')
+                    button(type='submit') 좋아요 취소
+            else
+                form(action='/posts/'+post.id+'/like' method='post')
+                    button(type='submit') 좋아요
+            
 
     br
     a(href='/posts'): button(type='button') list
@@ -33,8 +42,8 @@ block content
             .comment
                 table.comment-table
                     tr
-                        th 이름
-                        td= comment.user.name
+                        th 닉네임
+                        td= comment.user.nick
                     tr
                         th 날짜
                         td= comment.date

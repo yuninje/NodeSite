@@ -2,7 +2,7 @@ a(href='/'): button(type='button') 홈
 a(href='/posts'): button(type='button') 게시글
 
 if user && user.id
-    a(href='/users'): button(type='button') 내 정보
+    a(href='/users/'+user.nick): button(type='button') 내 정보
     a(href='/auth/logout'): button(type='button') 로그아웃
 else
     a(href='/auth/join'): button(type='button') 회원가입
@@ -10,4 +10,4 @@ else
 
 
 if user && user.id
-    h2= user.name + '님 안녕하세요 !'
+    h2= user.nick + '님 안녕하세요 !'

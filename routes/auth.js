@@ -16,6 +16,7 @@ router.get('/join', isNotLoggedIn, async (req, res) => {
 // 회원가입 액션
 router.post('/', isNotLoggedIn,async (req, res, next) => {
     const email = req.body.email;
+    const nick = req.body.nick;
     const name = req.body.name;
     const password = req.body.password;
 	try{
@@ -26,6 +27,7 @@ router.post('/', isNotLoggedIn,async (req, res, next) => {
         }
 		const user = await User.create({
 			email : email,
+			nick : nick,
 			name : name,
 			password : password,
 		});

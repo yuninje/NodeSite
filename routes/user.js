@@ -6,13 +6,27 @@ const {isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const {User, Post, Comment} = require('../models');
 const addDate = (object) => object.date = dateFormat(object.createdAt, "yyyy.mm.dd");
 
-router.get('/', isLoggedIn,  async (req, res, next) => {
+router.get('/:nick', isLoggedIn,  async (req, res, next) => {
+
     try{
-        const postCount = await Post.findAndCountAll({where : {userId : req.user.id}});
-        const commentCount = await Comment.findAndCountAll({where : {userId : req.user.id}});
+        const difUser = await User.findOne({
+            where : {nick : req.params.nick},
+            include : [{
+                model : User,
+                attributes : ['id', 'nick'],
+                as : 'Followers',
+            },{
+                model : User,
+                attributes : ['id', 'nick'],
+                as : 'Followings',
+            }]});
+        const postCount = await Post.findAndCountAll({where : {userId : difUser.id}});
+        const commentCount = await Comment.findAndCountAll({where : {userId : difUser.id}});
+        console.log(difUser);
         return res.render('user/profile', {
-            title : '사용자 프로필',
+            title : difUser.nick + '님의 프로필',
             user : req.user,
+            difUser : difUser,
             postCount : postCount,
             commentCount : commentCount
         });
@@ -22,18 +36,20 @@ router.get('/', isLoggedIn,  async (req, res, next) => {
     }
 });
 
-router.get('/posts', isLoggedIn, async (req, res, next) => {
+router.get('/:nick/posts', isLoggedIn, async (req, res, next) => {
     try{
+        const difUser = await User.findOne({where : {nick : req.params.nick}});
         const posts = await Post.findAll({
-            where : { userId : req.user.id },
+            where : { userId : difUser.id },
         });
         posts.forEach((post) => {
             addDate(post);
         });
 
         return res.render('user/posts', {
-            title : '내 게시글',
+            title : difUser.nick + '님의 게시글',
             user : req.user,
+            difUser : difUser,
             posts : posts
         });
     }catch(error){
@@ -42,25 +58,47 @@ router.get('/posts', isLoggedIn, async (req, res, next) => {
     }
 })
 
-router.get('/comments', isLoggedIn, async (req, res, next) => {
+router.get('/:nick/comments', isLoggedIn, async (req, res, next) => {
     try{
+        const difUser = await User.findOne({where : {nick : req.params.nick}});
         const comments = await Comment.findAll({
-            where : { userId : req.user.id },
+            where : { userId : difUser.id },
         });
         comments.forEach((comment) => {
             addDate(comment);
         });
 
         return res.render('user/comments', {
-            title : '내 댓글',
+            title : difUser.nick + '님의 댓글',
             user : req.user,
+            difUser : difUser,
             comments : comments
         });
     }catch(error){
         console.error(error);
         next(error);
     }
-})
+});
+
+router.post('/:id/follow', isLoggedIn, async (req, res, next) => {
+    try{
+        await req.user.addFollowing(parseInt(req.params.id, 10));   // 이미 들어가 있을 때 실행되어도 또 추가되지 않음.
+        res.send('success');
+    }catch(error){
+        console.error(error);
+        next(error);
+    }
+});
+
+router.post('/:id/unfollow', isLoggedIn, async (req, res, next) => {
+    try{
+        await req.user.removeFollowing(parseInt(req.params.id, 10));
+        res.send('success');
+    }catch(error){
+        console.error(error);
+        next(error);
+    }
+});
 
 
 module.exports = router;

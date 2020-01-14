@@ -10,7 +10,7 @@ block content
 
         each post in posts
             tr
-                td= post.user.name
+                td: a(href='/users/' + post.user.nick) #{post.user.nick} 
                 td
                     a(href='/posts/'+post.id) #{post.title}
                 td= post.date

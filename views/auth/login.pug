@@ -3,10 +3,10 @@ extends ../layout
 block content
 	form#login-form(action='/auth/login' method='post')
 		p
-			label(for='email') email
+			label(for='email') 이메일
 			input#email(type='email' name='email' required )
 		p
-			label(for='password') password
+			label(for='password') 비밀번호
 			input#password(type='password' name='password' required )
 		
 		

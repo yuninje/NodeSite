@@ -42,7 +42,7 @@ db.User.belongsToMany(db.User, {
 });
 db.User.belongsToMany(db.User, {
     foreignKey : 'followerId',
-    as : 'Following',   //  해당 데이터를 요청했을 때 사용할 key 값 ( user.Followers )
+    as : 'Followings',   //  해당 데이터를 요청했을 때 사용할 key 값 ( user.Followers )
     through : FOLLOW, //  만들 테이블
     timestamps : false,  // createdAt, updatedAt column 생성
     paranoid : false,    // deletedAt column 생성
@@ -51,11 +51,13 @@ db.User.belongsToMany(db.User, {
 // User : Post = N : M      :: Like
 db.User.belongsToMany(db.Post,{
   through : LIKE,
+  as : 'Likes',
   timestamps : false,  // createdAt, updatedAt column 생성
   paranoid : false,    // deletedAt column 생성
 });
 db.Post.belongsToMany(db.User, {
   through : LIKE,
+  as : 'Likers',
   timestamps : false,  // createdAt, updatedAt column 생성
   paranoid : false,    // deletedAt column 생성
 });
