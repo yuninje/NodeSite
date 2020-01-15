@@ -34,7 +34,9 @@ router.post('/:commentId', async (req, res, next) =>{
         try{
             await Comment.destroy({where: {id : commentId}});
             if(userId){
-                res.redirect('/users/comments');
+                const user = await User.findOne({where : {id : userId}, attributes : ['nick']});
+                console.log(user);
+                res.redirect('/users/'+user.nick+'/comments');
             }
             res.redirect('/posts/'+postId);
         }catch(error){

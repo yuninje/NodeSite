@@ -21,5 +21,11 @@ module.exports = (sequelize, DataTypes) => (
 	},{
 		timestamps : true,  // createdAt, updatedAt column 생성
 		paranoid : true, 	// deletedAt column 생성
-	})
+        indexes : [
+            {
+                unique : true,
+                fields : ['email','nick']
+            }
+        ]
+    })
 );

@@ -7,6 +7,9 @@ const { User, Post, Comment, Hashtag } = require('../models');
 const getUserJson = {model : User, attributes:['id','nick']};
 const getHashtagJson = {model : Hashtag};
 
+const POST_PER_PAGE = 2;
+const PAGE_PER_SCREEN = 3;
+
 const addDate = (object) => object.date = dateFormat(object.createdAt, "yyyy.mm.dd");
 const setHashtext = (post) => {
     post.hashtext = ''
@@ -14,19 +17,38 @@ const setHashtext = (post) => {
 }
 // 게시글 목록 페이지
 router.get('/', async (req, res, next) => {
-	console.log('/	::[GET]');
-	try {
-		const posts = await Post.findAll({
+    console.log('/	::[GET]');
+    try {
+        let nowPage = 1;
+        if(req.query.page !== undefined){
+            nowPage = req.query.page * 1;
+        }
+        const totalPostCount = await Post.count();
+        
+        const startPage = nowPage - (nowPage-1) % PAGE_PER_SCREEN;
+        const endPage = startPage + PAGE_PER_SCREEN-1;
+        const maxPage = Math.floor((totalPostCount-1)/POST_PER_PAGE)+1;
+
+
+        const posts = await Post.findAll({
+            offset : (nowPage-1) * POST_PER_PAGE,
+            limit : POST_PER_PAGE,
             include : [getUserJson, getHashtagJson]
         });
-		posts.forEach((post) => {
+        posts.forEach((post) => {
 			addDate(post);
             setHashtext(post);
-		});
+        });
+        
 		return res.render('post/index', {
             title : '게시글 목록',
+            user : req.user,
             posts : posts,
-            user : req.user
+            startPage : startPage,
+            nowPage : nowPage,
+            _endPage : endPage,
+            maxPage : maxPage,
+            PAGE_PER_SCREEN:PAGE_PER_SCREEN
 		});
 	} catch (error) {
 		console.error(error);
@@ -146,7 +168,7 @@ router.post('/:id', isLoggedIn, async (req, res, next) => {
 			await Post.update({title : title, content : content},
                 {where:{id : postId}, returning:true});
             const post = await Post.findOne({where : {id:postId}, include : getHashtagJson});
-            const hashtags = hashtext.match(/#[^#\s,;]+/gm);
+            const hashtags = hashtext.match(/#([0-9a-zA-Z가-힣]*)/gm);
             // 해쉬태그 테이블에 해쉬태그 추가.
 
             post.removeHashtags(post.hashtags.map(h => h.id));

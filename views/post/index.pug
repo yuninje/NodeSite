@@ -14,7 +14,21 @@ block content
                 td: a(href='/users/' + post.user.nick) #{post.user.nick} 
                 td: a(href='/posts/'+post.id) #{post.title}
                 td= post.date
-                td 어떠케 해쉬태그 하지 hashtags
+                td= post.hashtext
                 td= post.views
 
     a(href='/posts/create'): button(type='button') 새 글
+    br
+    - const endPage = Math.min(_endPage, maxPage);
+    if nowPage > PAGE_PER_SCREEN
+        a(href='/posts?page=1') <<
+        a(href='/posts?page='+(startPage - PAGE_PER_SCREEN)) <
+    - for(let page = startPage ; page <= endPage; page++){
+        if nowPage === page
+            a(href='/posts?page='+page): strong= page 
+        else
+            a(href='/posts?page='+page) #{page}
+    -}
+    if nowPage < maxPage - maxPage % PAGE_PER_SCREEN + 1
+        a(href='/posts?page=' + (endPage+1)) >
+        a(href='/posts?page=' + maxPage) >>

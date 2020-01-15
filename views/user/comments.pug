@@ -20,3 +20,17 @@ block content
                             input(type='hidden' name='userId' value=user.id)
                             input(type='submit' value='삭제')
 
+    br
+    - const endPage = Math.min(_endPage, maxPage);
+    if nowPage > PAGE_PER_SCREEN
+        a(href='/users/'+difUser.nick+'/comments?page=1') <<
+        a(href='/users/'+difUser.nick+'/comments?page='+(startPage - PAGE_PER_SCREEN)) <
+    - for(let page = startPage ; page <= endPage; page++){
+        if nowPage === page
+            a(href='/users/'+difUser.nick+'/comments?page='+page): strong= page 
+        else
+            a(href='/users/'+difUser.nick+'/comments?page='+page) #{page}
+    -}
+    if nowPage < maxPage - maxPage % PAGE_PER_SCREEN + 1
+        a(href='/users/'+difUser.nick+'/comments?page=' + (endPage+1)) >
+        a(href='/users/'+difUser.nick+'/comments?page=' + maxPage) >>
