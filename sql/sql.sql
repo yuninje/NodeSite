@@ -3,20 +3,26 @@ create database nodesite;
 use nodesite;
 show tables;
 
-select * from users;
-describe users;
 
-select * from posts;
-describe posts;
+select * from user;
+describe user;
 
-select * from comments;
-describe comments;
+select * from post;
+describe post;
 
-select * from likes;
-describe likes;
+select * from comment;
+describe comment;
 
-select * from follows;
-describe follows;
+select * from like;
+describe like;
 
-select * from posthashtag;
-describe posthashtag;
+select * from follow;
+describe follow;
+
+select * from hashtag;
+describe hashtag;
+
+select * from post_hashtag;
+describe post_hashtag;
+
+select *
